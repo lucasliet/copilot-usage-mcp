@@ -1,0 +1,46 @@
+{
+  "name": "copilot-usage-mcp",
+  "version": "1.0.5",
+  "description": "MCP server para obter informações de uso do GitHub Copilot",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "copilot-usage-mcp": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "github",
+    "copilot",
+    "usage",
+    "api",
+    "model-context-protocol",
+    "claude",
+    "ai",
+    "assistant"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucasliet/copilot-usage-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lucasliet/copilot-usage-mcp/issues"
+  },
+  "homepage": "https://github.com/lucasliet/copilot-usage-mcp#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ]
+}

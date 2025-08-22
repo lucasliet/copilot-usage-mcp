@@ -1,0 +1,196 @@
+# GitHub Copilot Usage MCP Server
+
+Um servidor MCP (Model Context Protocol) para obter informações de uso atual do GitHub Copilot, incluindo cotas, limites e estatísticas de uso.
+
+## Instalação
+
+### Via NPM (quando publicado)
+```bash
+npx -y copilot-usage-mcp
+```
+
+### Instalação Local para Desenvolvimento
+```bash
+# Clone o repositório
+git clone <url-do-repositorio>
+cd copilot-usage-mcp
+
+# Instale as dependências
+npm install
+
+# Execute o servidor
+npm start
+```
+
+## Como Obter o Token do Copilot
+
+Para usar este MCP server, você precisa do token de acesso do GitHub Copilot. Existem algumas formas de obtê-lo:
+
+### Método 1: Através do VS Code (Recomendado)
+
+1. Abra o VS Code com a extensão GitHub Copilot instalada
+2. Pressione `Ctrl+Shift+P` (ou `Cmd+Shift+P` no Mac)
+3. Digite "Developer: Open Webview Developer Tools"
+4. Na aba Network, faça uma requisição que utilize o Copilot
+5. Procure por requisições para `api.github.com/copilot_internal`
+6. Copie o valor do header `Authorization` (remova o "token " do início)
+
+### Método 2: Através de Ferramentas de Desenvolvimento
+
+Você pode usar ferramentas como mitmproxy ou interceptar requisições do VS Code para capturar o token.
+
+### Método 3: Através do Arquivo de Configuração (Neovim, JetBrains, etc.)
+
+As extensões oficiais do Copilot para várias IDEs (incluindo Neovim com `copilot.lua` e a suíte JetBrains) armazenam as informações de autenticação em um arquivo JSON local. Você pode extrair o token diretamente deste arquivo.
+
+1.  **Localize e abra o arquivo**: O arquivo geralmente está localizado em `~/.config/github-copilot/apps.json`.
+
+2.  **Encontre o token**: Dentro do arquivo JSON, procure por uma chave chamada `oauth_token`. O valor associado a essa chave é o seu token de acesso.
+
+    Você pode usar o seguinte comando no terminal para extrair o token rapidamente (requer a ferramenta `jq`):
+
+    ```bash
+    cat ~/.config/github-copilot/apps.json | jq -r '.[].oauth_token'
+    ```
+
+⚠️ **Importante**: Este token é temporário e expirará após algumas horas. Você precisará renová-lo periodicamente.
+
+## Uso com Agentes AI
+
+### Configuração para Claude Code
+
+```bash
+claude mcp add copilot-usage -- npx -y copilot-usage-mcp
+```
+
+### Configuração para Gemini CLI
+
+```bash
+gemini mcp add copilot-usage -- npx -y copilot-usage-mcp
+```
+
+### Configuração para Claude Desktop
+
+Adicione ao seu arquivo de configuração do Claude Desktop (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "copilot-usage": {
+      "command": "npx",
+      "args": ["-y", "copilot-usage-mcp"],
+      "env": {
+        "COPILOT_TOKEN": "seu_token_aqui"
+      }
+    }
+  }
+}
+```
+
+### Configuração para Cursor
+
+Para Cursor, adicione ao arquivo MCP de configuração:
+
+```json
+{
+  "mcpServers": {
+    "copilot-usage": {
+      "command": "npx",
+      "args": ["-y", "copilot-usage-mcp"],
+      "env": {
+        "COPILOT_TOKEN": "seu_token_aqui"
+      }
+    }
+  }
+}
+```
+
+## Ferramentas Disponíveis
+
+### `get_copilot_usage`
+
+Obtém informações brutas de uso do GitHub Copilot em formato JSON.
+
+**Parâmetros:**
+- `token` (string, opcional): Token de acesso do GitHub Copilot. Se omitido, será usado `COPILOT_TOKEN` da variável de ambiente.
+
+### `get_copilot_usage_formatted`
+
+Obtém informações de uso do GitHub Copilot formatadas de forma legível em português.
+
+**Parâmetros:**
+- `token` (string, opcional): Token de acesso do GitHub Copilot. Se omitido, será usado `COPILOT_TOKEN` da variável de ambiente.
+
+### `get_copilot_usage_summary`
+
+Obtém um resumo conciso das informações principais de uso do GitHub Copilot.
+
+**Parâmetros:**
+- `token` (string, opcional): Token de acesso do GitHub Copilot. Se omitido, será usado `COPILOT_TOKEN` da variável de ambiente.
+
+## Exemplos de Uso no Agent
+
+Depois de configurado, você pode usar o MCP server em conversas com seu agent AI:
+
+```
+"Verifique meu uso atual do GitHub Copilot"
+```
+
+```
+"Quanto restam das minhas interações premium do Copilot?"
+```
+
+```
+"Mostre meu status de cota do GitHub Copilot de forma detalhada"
+```
+
+## Uso da Variável de Ambiente
+
+Em vez de passar o token em cada chamada de ferramenta, você pode definir a variável `COPILOT_TOKEN` no ambiente antes de iniciar o agente/servidor:
+
+```bash
+export COPILOT_TOKEN="seu_token_aqui"
+node index.js
+```
+
+Ou em uma configuração MCP (Claude, Cursor etc.) basta definir em `env` sem precisar passar `token` nos argumentos.
+
+## Estrutura do Projeto
+
+```
+copilot-usage-mcp/
+├── index.js          # Servidor MCP principal
+├── package.json      # Dependências e configuração do NPM
+├── README.md         # Este arquivo
+├── LICENSE           # Licença MIT
+└── .gitignore        # Arquivos ignorados pelo Git
+```
+
+## Dependências
+
+- `@modelcontextprotocol/sdk`: SDK oficial do MCP
+
+## Limitações e Considerações
+
+⚠️ **Este servidor utiliza um endpoint interno não documentado do GitHub (`copilot_internal/user`)**
+
+- **Não é uma API oficial**: O endpoint pode ser alterado ou removido sem aviso
+- **Token temporário**: O token expira e precisa ser renovado periodicamente  
+- **Rate limiting**: Pode haver limites de taxa nas requisições
+- **Termos de uso**: Use por sua conta e risco, considerando os termos de serviço do GitHub
+
+## Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## Disclaimer
+
+Este projeto é não oficial e não está afiliado ao GitHub ou à Microsoft. Use por sua conta e risco.
