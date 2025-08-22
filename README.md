@@ -1,4 +1,7 @@
 # GitHub Copilot Usage MCP Server
+[![NPM](https://img.shields.io/npm/v/copilot-usage-mcp)](https://www.npmjs.com/package/copilot-usage-mcp)
+[![License](https://img.shields.io/github/license/lucasliet/copilot-usage-mcp?logo=gitbook&labelColor=%23262c31&color=red&logoColor=white)](LICENSE)
+
 
 Um servidor MCP (Model Context Protocol) para obter informações de uso atual do GitHub Copilot, incluindo cotas, limites e estatísticas de uso.
 
@@ -60,13 +63,13 @@ As extensões oficiais do Copilot para várias IDEs (incluindo Neovim com `copil
 ### Configuração para Claude Code
 
 ```bash
-claude mcp add copilot-usage -- npx -y copilot-usage-mcp
+claude mcp add copilot-usage --env COPILOT_TOKEN="seu_token_aqui" -- npx -y copilot-usage-mcp
 ```
 
 ### Configuração para Gemini CLI
 
 ```bash
-gemini mcp add copilot-usage -- npx -y copilot-usage-mcp
+gemini mcp add copilot-usage npx -y copilot-usage-mcp -e COPILOT_TOKEN="$COPILOT_TOKEN"
 ```
 
 ### Configuração para Claude Desktop
