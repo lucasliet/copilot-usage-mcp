@@ -42,45 +42,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
     {
       name: 'get_copilot_usage',
-      description: 'Obtém informações de uso atual do GitHub Copilot, incluindo cotas e limites (usa argumento token ou variável de ambiente COPILOT_TOKEN)',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          token: {
-            type: 'string',
-            description: 'Token de acesso do GitHub Copilot (COPILOT_TOKEN)'
-          }
-        },
-        required: []
-      }
+      description: 'Obtém informações de uso atual do GitHub Copilot, incluindo cotas e limites (usa variável de ambiente COPILOT_TOKEN)'
     },
     {
       name: 'get_copilot_usage_formatted',
-      description: 'Obtém informações de uso do GitHub Copilot formatadas de forma legível (usa argumento token ou variável de ambiente COPILOT_TOKEN)',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          token: {
-            type: 'string',
-            description: 'Token de acesso do GitHub Copilot (COPILOT_TOKEN)'
-          }
-        },
-        required: []
-      }
+      description: 'Obtém informações de uso do GitHub Copilot formatadas de forma legível (usa variável de ambiente COPILOT_TOKEN)'
     },
     {
       name: 'get_copilot_usage_summary',
-      description: 'Obtém um resumo conciso do uso do GitHub Copilot com informações principais (usa argumento token ou variável de ambiente COPILOT_TOKEN)',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          token: {
-            type: 'string',
-            description: 'Token de acesso do GitHub Copilot (COPILOT_TOKEN)'
-          }
-        },
-        required: []
-      }
+      description: 'Obtém um resumo conciso do uso do GitHub Copilot com informações principais (usa variável de ambiente COPILOT_TOKEN)'
     }
   ]
 }));
@@ -201,17 +171,14 @@ function createUsageSummary(data) {
 
 // Manipular chamadas de ferramentas
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-  // Permitir token via argumento ou variável de ambiente
-  const token = (args && typeof args.token === 'string' && args.token.trim())
-    ? args.token.trim()
-    : (process.env.COPILOT_TOKEN || '').trim();
+  const { name } = request.params;
+  const token = (process.env.COPILOT_TOKEN || '').trim();
 
   if (!token) {
     return {
       content: [{
         type: 'text',
-        text: 'Erro: Token do GitHub Copilot ausente. Passe {"token": "..."} ou defina a variável de ambiente COPILOT_TOKEN.'
+        text: '❌ Erro: Token do GitHub Copilot ausente. Defina a variável de ambiente COPILOT_TOKEN.'
       }],
       isError: true
     };
