@@ -225,7 +225,7 @@ async function main() {
   try {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error('✅ Copilot Usage MCP Server iniciado com sucesso');
+    console.log('✅ Copilot Usage MCP Server iniciado com sucesso');
   } catch (error) {
     console.error('❌ Erro ao iniciar o servidor MCP:', error.message);
     process.exit(1);
@@ -233,15 +233,13 @@ async function main() {
 }
 
 // Tratar sinais de encerramento gracefully
-process.on('SIGINT', () => {
-  console.error('\n🔄 Encerrando Copilot Usage MCP Server...');
+const shutdownHandler = (signal) => {
+  console.log(`\n🔄 Encerrando Copilot Usage MCP Server... (sinal: ${signal})`);
   process.exit(0);
-});
+};
 
-process.on('SIGTERM', () => {
-  console.error('\n🔄 Encerrando Copilot Usage MCP Server...');
-  process.exit(0);
-});
+process.on('SIGINT', () => shutdownHandler('SIGINT'));
+process.on('SIGTERM', () => shutdownHandler('SIGTERM'));
 
 main().catch((error) => {
   console.error('❌ Erro fatal:', error.message);
