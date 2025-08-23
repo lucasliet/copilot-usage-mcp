@@ -7,20 +7,9 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
-// Importar fetch de forma compatível
-let fetch;
-try {
-  // Tenta usar fetch nativo (Node.js 18+)
-  fetch = globalThis.fetch;
-} catch (error) {
-  // Fallback para node-fetch se necessário
-  console.error('Fetch nativo não disponível, será necessário instalar node-fetch se o Node.js for < 18');
-  process.exit(1);
-}
-
-// Verificar se fetch está disponível
-if (!fetch) {
-  console.error('Erro: fetch não está disponível. Por favor, atualize para Node.js 18+');
+const fetch = globalThis.fetch;
+if (typeof fetch !== 'function') {
+  console.error('❌ Erro: fetch não está disponível. Atualize para Node.js 18+ ou superior.');
   process.exit(1);
 }
 
