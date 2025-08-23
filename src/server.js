@@ -18,7 +18,7 @@ if (typeof fetch !== 'function') {
 const server = new Server(
   {
     name: 'copilot-usage-mcp',
-    version: '2.1.0'
+    version: '2.1.1'
   },
   {
     capabilities: {

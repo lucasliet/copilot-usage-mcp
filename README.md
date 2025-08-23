@@ -63,13 +63,13 @@ As extensões oficiais do Copilot para várias IDEs (incluindo Neovim com `copil
 ### Configuração para Claude Code
 
 ```bash
-claude mcp add copilot-usage --env COPILOT_TOKEN="seu_token_aqui" -- npx -y copilot-usage-mcp
+claude mcp add --scope user copilot-usage --env COPILOT_TOKEN="seu_token_aqui" -- npx -y copilot-usage-mcp
 ```
 
 ### Configuração para Gemini CLI
 
 ```bash
-gemini mcp add copilot-usage npx -y copilot-usage-mcp -e COPILOT_TOKEN="$COPILOT_TOKEN"
+gemini mcp add copilot-usage npx -y copilot-usage-mcp -e COPILOT_TOKEN="seu_token_aqui"
 ```
 
 ### Configuração para Claude Desktop
