@@ -17,7 +17,7 @@ if (typeof fetch !== 'function') {
 const server = new Server(
   {
     name: 'copilot-usage-mcp',
-    version: '1.0.7'
+    version: '2.0.0'
   },
   {
     capabilities: {
@@ -31,15 +31,30 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
     {
       name: 'get_copilot_usage',
-      description: 'Obtém informações de uso atual do GitHub Copilot, incluindo cotas e limites (usa variável de ambiente COPILOT_TOKEN)'
+      description: 'Obtém informações de uso atual do GitHub Copilot, incluindo cotas e limites, dados puros a API',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+        required: []
+      }
     },
     {
       name: 'get_copilot_usage_formatted',
-      description: 'Obtém informações de uso do GitHub Copilot formatadas de forma legível (usa variável de ambiente COPILOT_TOKEN)'
+      description: 'Obtém informações de uso do GitHub Copilot formatadas de forma legível',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+        required: []
+      }
     },
     {
       name: 'get_copilot_usage_summary',
-      description: 'Obtém um resumo conciso do uso do GitHub Copilot com informações principais (usa variável de ambiente COPILOT_TOKEN)'
+      description: 'Obtém um resumo conciso do uso do GitHub Copilot com informações principais, como o restante da quota premium (economiza tokens)',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+        required: []
+      }
     }
   ]
 }));
@@ -164,6 +179,7 @@ const errorResponse = (message) => ({
 // Manipular chamadas de ferramentas
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name } = request.params;
+  // Permitir token via argumento ou variável de ambiente
   const token = (process.env.COPILOT_TOKEN || '').trim();
 
   if (!token) {
