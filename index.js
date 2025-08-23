@@ -78,7 +78,7 @@ async function fetchCopilotUsage(token) {
 function formatUsageInfo(data) {
   const formatDate = (dateStr) => {
     try {
-      return new Date(dateStr).toLocaleString('pt-BR');
+      return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(dateStr));
     } catch {
       return dateStr;
     }
@@ -91,38 +91,33 @@ function formatUsageInfo(data) {
     return `${quota.remaining}/${quota.entitlement} (${quota.percent_remaining.toFixed(1)}% restante)`;
   };
 
-  let formatted = `🤖 **GitHub Copilot - Status de Uso**\n\n`;
-  formatted += `📋 **Informações Gerais:**\n`;
-  formatted += `• Plano: ${data.copilot_plan}\n`;
-  formatted += `• Tipo de acesso: ${data.access_type_sku}\n`;
-  formatted += `• Chat habilitado: ${data.chat_enabled ? 'Sim' : 'Não'}\n`;
-  formatted += `• Data de atribuição: ${formatDate(data.assigned_date)}\n`;
-  formatted += `• Próxima renovação de cota: ${formatDate(data.quota_reset_date)}\n\n`;
+  const formatted = `🤖 **GitHub Copilot - Status de Uso**\n\n` +
+    `📋 **Informações Gerais:**\n` +
+    `• Plano: ${data.copilot_plan}\n` +
+    `• Tipo de acesso: ${data.access_type_sku}\n` +
+    `• Chat habilitado: ${data.chat_enabled ? 'Sim' : 'Não'}\n` +
+    `• Data de atribuição: ${formatDate(data.assigned_date)}\n` +
+    `• Próxima renovação de cota: ${formatDate(data.quota_reset_date)}\n\n` +
 
-  formatted += `📊 **Cotas de Uso:**\n`;
+    `📊 **Cotas de Uso:**\n` +
 
-  const quotas = data.quota_snapshots;
+    `\n🗨️ **Chat:**\n` +
+    `• Status: ${formatQuota(data.quota_snapshots.chat)}\n` +
+    `• Overage permitido: ${data.quota_snapshots.chat.overage_permitted ? 'Sim' : 'Não'}\n` +
+    `• Contador de overage: ${data.quota_snapshots.chat.overage_count}\n` +
 
-  formatted += `\n🗨️ **Chat:**\n`;
-  formatted += `• Status: ${formatQuota(quotas.chat)}\n`;
-  formatted += `• Overage permitido: ${quotas.chat.overage_permitted ? 'Sim' : 'Não'}\n`;
-  formatted += `• Contador de overage: ${quotas.chat.overage_count}\n`;
+    `\n💡 **Completions (Autocompletar):**\n` +
+    `• Status: ${formatQuota(data.quota_snapshots.completions)}\n` +
+    `• Overage permitido: ${data.quota_snapshots.completions.overage_permitted ? 'Sim' : 'Não'}\n` +
+    `• Contador de overage: ${data.quota_snapshots.completions.overage_count}\n` +
 
-  formatted += `\n💡 **Completions (Autocompletar):**\n`;
-  formatted += `• Status: ${formatQuota(quotas.completions)}\n`;
-  formatted += `• Overage permitido: ${quotas.completions.overage_permitted ? 'Sim' : 'Não'}\n`;
-  formatted += `• Contador de overage: ${quotas.completions.overage_count}\n`;
-
-  formatted += `\n⭐ **Interações Premium:**\n`;
-  formatted += `• Status: ${formatQuota(quotas.premium_interactions)}\n`;
-  formatted += `• Overage permitido: ${quotas.premium_interactions.overage_permitted ? 'Sim' : 'Não'}\n`;
-  formatted += `• Contador de overage: ${quotas.premium_interactions.overage_count}\n`;
+    `\n⭐ **Interações Premium:**\n` +
+    `• Status: ${formatQuota(data.quota_snapshots.premium_interactions)}\n` +
+    `• Overage permitido: ${data.quota_snapshots.premium_interactions.overage_permitted ? 'Sim' : 'Não'}\n` +
+    `• Contador de overage: ${data.quota_snapshots.premium_interactions.overage_count}\n`;
 
   if (data.organization_list && data.organization_list.length > 0) {
-    formatted += `\n🏢 **Organizações:**\n`;
-    data.organization_list.forEach(org => {
-      formatted += `• ${org}\n`;
-    });
+    return formatted + `\n🏢 **Organizações:**\n` + data.organization_list.map(org => `• ${org}`).join('\n') + '\n';
   }
 
   return formatted;
@@ -130,33 +125,41 @@ function formatUsageInfo(data) {
 
 // Função para criar um resumo conciso
 function createUsageSummary(data) {
-  const quotas = data.quota_snapshots;
   const formatDate = (dateStr) => {
     try {
-      return new Date(dateStr).toLocaleDateString('pt-BR');
+      return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' }).format(new Date(dateStr));
     } catch {
       return dateStr;
     }
   };
 
-  let summary = `📊 **Resumo GitHub Copilot** (${data.copilot_plan})\n\n`;
+  const quotas = data.quota_snapshots;
+
+  const summaryLines = [];
+  summaryLines.push(`📊 **Resumo GitHub Copilot** (${data.copilot_plan})\n`);
 
   // Status mais importante - interações premium
   if (!quotas.premium_interactions.unlimited) {
     const remaining = quotas.premium_interactions.remaining;
     const total = quotas.premium_interactions.entitlement;
     const percent = quotas.premium_interactions.percent_remaining.toFixed(1);
-    summary += `⭐ **Interações Premium**: ${remaining}/${total} restantes (${percent}%)\n`;
+    summaryLines.push(`⭐ **Interações Premium**: ${remaining}/${total} restantes (${percent}%)`);
   }
 
   // Chat e Completions (geralmente ilimitados)
-  summary += `🗨️ **Chat**: ${quotas.chat.unlimited ? 'Ilimitado' : quotas.chat.remaining + '/' + quotas.chat.entitlement}\n`;
-  summary += `💡 **Completions**: ${quotas.completions.unlimited ? 'Ilimitado' : quotas.completions.remaining + '/' + quotas.completions.entitlement}\n`;
+  summaryLines.push(`🗨️ **Chat**: ${quotas.chat.unlimited ? 'Ilimitado' : quotas.chat.remaining + '/' + quotas.chat.entitlement}`);
+  summaryLines.push(`💡 **Completions**: ${quotas.completions.unlimited ? 'Ilimitado' : quotas.completions.remaining + '/' + quotas.completions.entitlement}`);
 
-  summary += `\n📅 **Renovação**: ${formatDate(data.quota_reset_date)}`;
+  summaryLines.push(`\n📅 **Renovação**: ${formatDate(data.quota_reset_date)}`);
 
+  const summary = summaryLines.join('\n');
   return summary;
 }
+
+const errorResponse = (message) => ({
+  content: [{ type: 'text', text: `❌ ${message}` }],
+  isError: true
+});
 
 // Manipular chamadas de ferramentas
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -164,13 +167,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const token = (process.env.COPILOT_TOKEN || '').trim();
 
   if (!token) {
-    return {
-      content: [{
-        type: 'text',
-        text: '❌ Erro: Token do GitHub Copilot ausente. Defina a variável de ambiente COPILOT_TOKEN.'
-      }],
-      isError: true
-    };
+    return errorResponse('Erro: Token do GitHub Copilot ausente. Defina a variável de ambiente COPILOT_TOKEN.');
   }
 
   if (name === 'get_copilot_usage') {
@@ -184,13 +181,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }]
       };
     } catch (error) {
-      return {
-        content: [{
-          type: 'text',
-          text: `❌ Erro ao obter informações de uso do Copilot: ${error.message}`
-        }],
-        isError: true
-      };
+      return errorResponse('Erro ao obter informações de uso do Copilot: ' + error.message);
     }
   }
 
@@ -206,13 +197,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }]
       };
     } catch (error) {
-      return {
-        content: [{
-          type: 'text',
-          text: `❌ Erro ao obter informações de uso do Copilot: ${error.message}`
-        }],
-        isError: true
-      };
+      return errorResponse('Erro ao obter informações de uso do Copilot: ' + error.message);
     }
   }
 
@@ -228,13 +213,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }]
       };
     } catch (error) {
-      return {
-        content: [{
-          type: 'text',
-          text: `❌ Erro ao obter informações de uso do Copilot: ${error.message}`
-        }],
-        isError: true
-      };
+      return errorResponse('Erro ao obter informações de uso do Copilot: ' + error.message);
     }
   }
 
