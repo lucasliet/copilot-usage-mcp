@@ -22,7 +22,7 @@ if (typeof fetch !== 'function') {
 const server = new Server(
   {
     name: 'copilot-usage-mcp',
-    version: '2.1.1'
+    version: '2.1.2'
   },
   {
     capabilities: {
@@ -38,32 +38,20 @@ const server = new Server(
  */
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
-    {
+   {
       name: 'get_copilot_usage',
-      description: 'Obtém informações de uso atual do GitHub Copilot, incluindo cotas e limites, dados puros a API',
-      inputSchema: {
-        type: 'object',
-        properties: {},
-        required: []
-      }
+      description: 'Obtém informações de uso atual do GitHub Copilot, incluindo cotas e limites, dados originais da API',
+      inputSchema: { type: 'object', properties: {}, required: [] }
     },
     {
       name: 'get_copilot_usage_formatted',
-      description: 'Obtém informações de uso do GitHub Copilot formatadas de forma legível',
-      inputSchema: {
-        type: 'object',
-        properties: {},
-        required: []
-      }
+      description: 'Obtém informações de uso do GitHub Copilot formatado humanizado',
+      inputSchema: { type: 'object', properties: {}, required: [] }
     },
     {
       name: 'get_copilot_usage_summary',
       description: 'Obtém um resumo conciso do uso do GitHub Copilot com informações principais, como o restante da quota premium (economiza tokens)',
-      inputSchema: {
-        type: 'object',
-        properties: {},
-        required: []
-      }
+      inputSchema: { type: 'object', properties: {}, required: [] }
     }
   ]
 }));
