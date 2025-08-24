@@ -1,4 +1,3 @@
-
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -14,7 +13,12 @@ if (typeof fetch !== 'function') {
   process.exit(1);
 }
 
-// Criar o servidor MCP
+/**
+ * Creates the MCP server instance.
+ * The server is configured with a name, version, and capabilities.
+ * In this case, it declares support for 'tools'.
+ * @type {Server}
+ */
 const server = new Server(
   {
     name: 'copilot-usage-mcp',
@@ -27,7 +31,11 @@ const server = new Server(
   }
 );
 
-// Listar ferramentas disponíveis
+/**
+ * Sets up the request handler for listing available tools.
+ * This handler responds to `ListToolsRequestSchema` by providing a list of tools
+ * that the server exposes, along with their descriptions and input schemas.
+ */
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
     {
@@ -60,12 +68,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   ]
 }));
 
+/**
+ * Creates an error response object for tool calls.
+ * @param {string} message - The error message to be displayed.
+ * @returns {object} An object formatted as an MCP tool response indicating an error.
+ */
 const errorResponse = (message) => ({
   content: [{ type: 'text', text: `❌ ${message}` }],
   isError: true
 });
 
-// Manipular chamadas de ferramentas
+/**
+ * Handles incoming tool call requests.
+ * It retrieves the GitHub Copilot token from environment variables, fetches usage data,
+ * and returns formatted or raw usage information based on the tool name.
+ * @param {object} request - The tool call request object, containing the tool 'name' in its params.
+ */
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name } = request.params;
   // Permitir token via argumento ou variável de ambiente
@@ -114,7 +132,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   throw new Error(`Ferramenta desconhecida: ${name}`);
 });
 
-// Inicializar o servidor
+/**
+ * Initializes the MCP server, connecting it to a StdioServerTransport.
+ * Logs success or error messages to the console and exits the process on failure.
+ */
 export async function initialize() {
   try {
     const transport = new StdioServerTransport();

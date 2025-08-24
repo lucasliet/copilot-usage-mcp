@@ -1,5 +1,10 @@
-
-// Função para fazer a requisição ao GitHub Copilot API
+/**
+ * Fetches the current GitHub Copilot usage data from the Copilot API.
+ *
+ * @param {string} token - The GitHub token with Copilot access.
+ * @returns {Promise<object>} A promise that resolves to the Copilot usage data.
+ * @throws {Error} If the API request fails or the token is invalid.
+ */
 export async function fetchCopilotUsage(token) {
   try {
     const response = await fetch('https://api.github.com/copilot_internal/user', {
