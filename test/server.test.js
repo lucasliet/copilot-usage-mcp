@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { listToolsHandler, callToolHandler } from './server.js';
-import * as api from './api.js';
-import * as formatter from './formatter.js';
+import { listToolsHandler, callToolHandler } from '../src/server.js';
+import * as api from '../src/api.js';
+import * as formatter from '../src/formatter.js';
 
-vi.mock('./api.js');
-vi.mock('./formatter.js');
+vi.mock('../src/api.js');
+vi.mock('../src/formatter.js');
 
 describe('Server Handlers', () => {
   beforeEach(() => {

@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Use vi.doMock to hoist the mock before imports
 const mockInitialize = vi.fn();
-vi.doMock('./src/server.js', () => ({ initialize: mockInitialize }));
+vi.doMock('../src/server.js', () => ({ initialize: mockInitialize }));
 
 // Dynamically import the module to be tested after mocks are set up
-const { main, shutdownHandler } = await import('./index.js');
+const { main, shutdownHandler } = await import('../index.js');
 
 describe('index.js', () => {
   const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {});

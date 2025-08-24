@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
-import { fetchCopilotUsage } from './api.js';
+import { fetchCopilotUsage } from '../src/api.js';
 import { server } from './mocks/server.js';
 
 beforeAll(() => server.listen());

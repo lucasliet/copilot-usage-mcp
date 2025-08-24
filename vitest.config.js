@@ -8,7 +8,7 @@ export default defineConfig({
       all: true,
       include: ['src/**/*.js', 'index.js'],
       exclude: [
-        'src/mocks/**',
+        'test/mocks/**',
         '**/*.test.js',
         'vitest.config.js'
       ],

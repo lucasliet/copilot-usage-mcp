@@ -1,6 +1,7 @@
 # GitHub Copilot Usage MCP Server
 [![NPM](https://img.shields.io/npm/v/copilot-usage-mcp)](https://www.npmjs.com/package/copilot-usage-mcp)
 [![License](https://img.shields.io/github/license/lucasliet/copilot-usage-mcp?logo=gitbook&labelColor=%23262c31&color=red&logoColor=white)](LICENSE)
+[![tests](https://github.com/lucasliet/copilot-usage-mcp/actions/workflows/tests.yml/badge.svg)](https://github.com/lucasliet/copilot-usage-mcp/actions/workflows/tests.yml)
 
 
 Um servidor MCP (Model Context Protocol) para obter informações de uso atual do GitHub Copilot, incluindo cotas, limites e estatísticas de uso.
@@ -133,10 +134,18 @@ copilot-usage-mcp/
 ├── README.md             # Este arquivo
 ├── LICENSE               # Licença MIT
 ├── .gitignore            # Arquivos ignorados pelo Git
-└── src/                  # Código fonte principal
-    ├── server.js         # Servidor MCP principal
-    ├── api.js            # Lógica da API do GitHub Copilot
-    └── formatter.js      # Utilitários de formatação
+├── src/                  # Código fonte principal
+│   ├── server.js         # Servidor MCP principal
+│   ├── api.js            # Lógica da API do GitHub Copilot
+│   └── formatter.js      # Utilitários de formatação
+└── test/                 # Testes
+    ├── index.test.js
+    ├── api.test.js
+    ├── formatter.test.js
+    ├── server.test.js
+    └── mocks/
+        ├── handlers.js
+        └── server.js
 ```
 
 ## Dependências

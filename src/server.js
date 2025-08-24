@@ -62,7 +62,7 @@ export const callToolHandler = async (request) => {
 
 export async function initialize() {
   const server = new Server(
-    { name: 'copilot-usage-mcp', version: '2.1.1' },
+    { name: 'copilot-usage-mcp', version: '2.1.3' },
     { capabilities: { tools: {} } }
   );
 

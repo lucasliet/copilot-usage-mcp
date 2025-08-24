@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatUsageInfo, createUsageSummary } from './formatter.js';
+import { formatUsageInfo, createUsageSummary } from '../src/formatter.js';
 
 const mockData = {
   copilot_plan: 'Business',
