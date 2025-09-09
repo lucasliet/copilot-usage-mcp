@@ -1,6 +1,6 @@
 {
   "name": "copilot-usage-mcp",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "MCP server para obter informações de uso do GitHub Copilot",
   "main": "index.js",
   "type": "module",

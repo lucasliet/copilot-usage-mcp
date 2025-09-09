@@ -62,7 +62,7 @@ export const callToolHandler = async (request) => {
 
 export async function initialize() {
   const server = new Server(
-    { name: 'copilot-usage-mcp', version: '2.1.3' },
+    { name: 'copilot-usage-mcp', version: '2.1.4' },
     { capabilities: { tools: {} } }
   );
 
@@ -72,7 +72,7 @@ export async function initialize() {
   try {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.log('✅ Copilot Usage MCP Server iniciado com sucesso');
+    console.log('Copilot Usage MCP Server iniciado com sucesso');
   } catch (error) {
     console.error('❌ Erro ao iniciar o servidor MCP:', error.message);
     process.exit(1);
